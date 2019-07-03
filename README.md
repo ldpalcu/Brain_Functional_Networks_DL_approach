@@ -1,1 +1,1 @@
-# Brain_Functional_Networks_DL_approach
+# Brain Functional Networks - an interpretable graph classification solution
