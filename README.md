@@ -1,1 +1,2 @@
-# Brain Functional Networks - an interpretable graph classification solution
+# Brain Functional Networks - An Interpretable Graph Classification Solution
+
