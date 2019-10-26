@@ -2,17 +2,9 @@ from __future__ import print_function
 
 import os
 import sys
-import collections
-import numpy as np
 import torch
-import random
 from torch.autograd import Variable
-from torch.nn.parameter import Parameter
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from tqdm import tqdm
-import pdb
 import logging
 
 sys.path.append('%s/lib' % os.path.dirname(os.path.realpath(__file__)))

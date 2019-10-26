@@ -4,20 +4,16 @@ import torch
 import random
 import numpy as np
 from tqdm import tqdm
-from torch.autograd import Variable
-from torch.nn.parameter import Parameter
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 import math
-import pdb
 from DGCNN_embedding import DGCNN
 from mlp_dropout import MLPClassifier, MLPRegression
 from sklearn import metrics
 from util import cmd_args, load_data
-from my_grad_cam import GradCam
-from visualize_cam import create_heatmap_cam_1d_new
-from visualize_cam import create_heatmap_cam_2d
+from grad_cam import GradCam
+# from visualize_cam import create_heatmap_cam_1d
+# from visualize_cam import create_heatmap_cam_2d
 from visualize_cam import create_labels
 
 

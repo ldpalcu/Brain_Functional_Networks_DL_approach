@@ -1,13 +1,5 @@
 import torch
-from torch.autograd import Variable
-from torch.autograd import Function
-from torchvision import models
-from torchvision import utils
-import cv2
-import sys
 import numpy as np
-import argparse
-from scipy.ndimage import interpolation
 
 
 class GradCam:
