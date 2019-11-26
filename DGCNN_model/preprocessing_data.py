@@ -1,16 +1,19 @@
 import utils_gcn as us
 import networkx as nx
 import collections
+import random
+import numpy as np
 
-path_to_read = ""
-threshold = ""
-states = []
+path_to_read = "pre_processed_data/500_85_8_graphs_met4_imb_overlap/"
+path_to_write = "graphs_500_85_8_70_met4_imb_overlap.txt"
+threshold = "sum_weight_70"
+states = ["State1", "State2"]
 format = 1
 tag = 0
 
 
 def create_labels(state):
-    switcher = {}
+    switcher = {"State1": 0, "State2": 1}
 
     return switcher.get(state, lambda: "Invalid state")
 
@@ -51,7 +54,7 @@ def filter_nodes_graphs(all_graphs, id_nodes):
 
 
 def transform_xml_to_txt(all_graphs):
-    with open("", "w") as f:
+    with open(path_to_write, "w") as f:
         nr_graphs = len(all_graphs)
         f.write(str(nr_graphs) + "\n")
         for graph_name, graph in all_graphs.items():
@@ -140,43 +143,93 @@ def write_features(all_graphs):
                 f.write("\n")
 
 
-def create_train_splits(all_graphs, example_split, idx_nr):
+def create_train_splits(all_graphs, example_split_1, example_split_2, idx_nr):
     with open("test_idx-" + str(idx_nr) + ".txt",
               "w") as g_test, open("train_idx-" + str(idx_nr) + ".txt",
                                    "w") as g_train:
         k = 0
         for graph_name, graph in all_graphs.items():
-            print(graph_name)
+            # print(graph_name)
             # nr_example, state, _ = graph_name.split("-")
             nr_example, state = graph_name.split("-")
             state, _ = state.split(".")
             label = create_labels(state)
             print(label)
 
-            if int(nr_example) in example_split:
-                g_test.write("{}\n".format(str(k)))
-            else:
-                g_train.write("{}\n".format(str(k)))
+            if state == "State1":
+                if int(nr_example) in example_split_1:
+                    g_test.write("{}\n".format(str(k)))
+                else:
+                    g_train.write("{}\n".format(str(k)))
+            elif state == "State2":
+                if int(nr_example) in example_split_2:
+                    g_test.write("{}\n".format(str(k)))
+                else:
+                    g_train.write("{}\n".format(str(k)))
             k = k + 1
 
 
-examples_split = [
-    range(1, 51, 1),
-    range(51, 101, 1),
-    range(101, 151, 1),
-    range(151, 201, 1),
-    range(201, 251, 1),
-    range(1, 101, 2),
-    range(101, 201, 2),
-    range(151, 251, 2),
-    range(51, 151, 2),
-    range(51, 76, 1) + range(201, 226, 1)
-]
-examples_split_2 = [[1, 3], [5, 7], [9, 11], [13, 15], [15, 17], [11, 13],
-                    [7, 9], [3, 5], [1, 17], [7, 11]]
-examples_split_3 = [[2, 4], [6, 8], [10, 12], [14, 16], [16, 18], [12, 14],
-                    [8, 10], [4, 6], [2, 18], [6, 12]]
-filtered_examples_id = [[1]]
+def create_examples_split():
+    elems = []
+    elems.append(
+        random.sample(list(range(0, 50, 1)) + list(range(250, 300, 1)), 100))
+    elems.append(
+        random.sample(list(range(50, 100, 1)) + list(range(300, 350, 1)), 100))
+    elems.append(
+        random.sample(
+            list(range(100, 150, 1)) + list(range(350, 400, 1)), 100))
+    elems.append(
+        random.sample(
+            list(range(150, 200, 1)) + list(range(400, 450, 1)), 100))
+    elems.append(
+        random.sample(
+            list(range(200, 250, 1)) + list(range(450, 500, 1)), 100))
+    elems.append(
+        random.sample(list(range(0, 100, 2)) + list(range(250, 350, 2)), 100))
+    elems.append(
+        random.sample(
+            list(range(100, 200, 2)) + list(range(350, 450, 2)), 100))
+    elems.append(
+        random.sample(list(range(1, 101, 2)) + list(range(251, 351, 2)), 100))
+    elems.append(
+        random.sample(
+            list(range(101, 201, 2)) + list(range(351, 451, 2)), 100))
+    elems.append(
+        random.sample(
+            list(range(150, 250, 2)) + list(range(400, 500, 2)), 100))
+
+    # for k in range(0, len(elems)):
+    #     np.random.shuffle(elems[k])
+
+    return elems
+
+
+def create_examples_split_imbalanced():
+    elems_1 = []
+    elems_1.append(random.sample(list(range(0, 90, 1)), 90))
+    elems_1.append(random.sample(list(range(90, 180, 1)), 90))
+    elems_1.append(random.sample(list(range(180, 270, 1)), 90))
+    elems_1.append(random.sample(list(range(270, 360, 1)), 90))
+    elems_1.append(random.sample(list(range(360, 450, 1)), 90))
+    elems_1.append(random.sample(list(range(0, 180, 2)), 90))
+    elems_1.append(random.sample(list(range(180, 360, 2)), 90))
+    elems_1.append(random.sample(list(range(91, 271, 2)), 90))
+    elems_1.append(random.sample(list(range(181, 361, 2)), 90))
+    elems_1.append(random.sample(list(range(270, 450, 2)), 90))
+
+    elems_2 = []
+    elems_2.append(random.sample(list(range(450, 460, 1)), 10))
+    elems_2.append(random.sample(list(range(460, 470, 1)), 10))
+    elems_2.append(random.sample(list(range(470, 480, 1)), 10))
+    elems_2.append(random.sample(list(range(480, 490, 1)), 10))
+    elems_2.append(random.sample(list(range(490, 500, 1)), 10))
+    elems_2.append(random.sample(list(range(450, 470, 2)), 10))
+    elems_2.append(random.sample(list(range(470, 490, 2)), 10))
+    elems_2.append(random.sample(list(range(451, 471, 2)), 10))
+    elems_2.append(random.sample(list(range(471, 491, 2)), 10))
+    elems_2.append(random.sample(list(range(480, 500, 2)), 10))
+
+    return elems_1, elems_2
 
 
 def pipeline_processing_data():
@@ -185,8 +238,15 @@ def pipeline_processing_data():
     write_edges(all_graphs)
     transform_xml_to_txt(all_graphs)
     idx_nr = 1
-    for example_split in examples_split:
-        create_train_splits(all_graphs, example_split, idx_nr)
+    # created_examples_split = create_examples_split()
+    examples_split_1, examples_split_2 = create_examples_split_imbalanced()
+    example_split = []
+    example_split.append(examples_split_1)
+    example_split.append(examples_split_2)
+    for k in range(0, 10):
+        print(idx_nr)
+        create_train_splits(all_graphs, example_split[0][k],
+                            example_split[1][k], idx_nr)
         idx_nr += 1
 
 
