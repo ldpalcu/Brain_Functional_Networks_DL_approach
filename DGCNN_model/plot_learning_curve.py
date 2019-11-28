@@ -1,13 +1,13 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-path_to_read = ""
-path_to_save = ""
+path_to_read = "./"
+path_to_save = "./"
 
 all_scores_train = []
 all_scores_test = []
-max_value = 100
-int_value = 100
+max_value = 75
+int_value = 75
 x_values = list(range(0, max_value))
 for i in range(1, 11):
     file_train = "all_avg_loss_" + str(i) + ".txt"
@@ -22,6 +22,7 @@ for i in range(1, 11):
     plt.ylabel("Score")
     plt.plot(x_values, scores_train, label="train")
     plt.plot(x_values, scores_test, label="test")
+    plt.ylim([0, 1])
     plt.legend()
     plt.savefig(path_to_save + "learning_curve_fold_" + str(i) + ".png")
     plt.clf()
@@ -33,6 +34,7 @@ plt.xlabel("Num epochs")
 plt.ylabel("Score")
 plt.plot(x_values, mean_scores_train, label="train")
 plt.plot(x_values, mean_scores_test, label="test")
+plt.ylim([0, 1])
 plt.legend()
 plt.savefig(path_to_save + "learning_curve_fold_" + "mean" + ".png")
 plt.clf()

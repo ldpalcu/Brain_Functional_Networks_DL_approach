@@ -4,7 +4,6 @@ from os.path import isfile, join
 import numpy as np
 import pprint
 import matplotlib.pyplot as plt
-import Arrays
 
 
 def getdicts(directory):
@@ -27,22 +26,20 @@ def getdicts(directory):
     return filesdict
 
 
-state = []
+state = ["State1/Good", "State2/Good"]
 order = range(0, 85)
 labels = False
 
-nr_dataset = 60
-dataset_type = ""
+nr_dataset = 70
+dataset_type = "_"
 
-dir_path_files = ""
-dir_path_figures = ""
+dir_path_files = "./data/graphs_500_85_8_70_met4_imb_overlap/files/CAM_1D_vector_1/CAM_average/"
+dir_path_figures = "./data/graphs_500_85_8_70_met4_imb_overlap/figures/CAM_1D_vector_1/CAM_average/"
 
 if __name__ == "__main__":
 
-    for s in state:
-
-        control = getdicts(dir_path_files + s)
-        etoh = getdicts(dir_path_files + s)
+        control = getdicts(dir_path_files + state[0])
+        etoh = getdicts(dir_path_files + state[1])
 
         arr_dict = {}
 
@@ -62,7 +59,8 @@ if __name__ == "__main__":
         orderd_ROIs = []
         for i in order:
             if labels:
-                orderd_ROIs.append(Arrays.ROIs[i])
+                # orderd_ROIs.append(Arrays.ROIs[i])
+                print("labels")
             else:
                 orderd_ROIs.append(i)
 
@@ -77,6 +75,7 @@ if __name__ == "__main__":
                         aspect="auto",
                         vmin=-0.5,
                         vmax=0.5)
+                        
 
         # plt.colorbar(im, boundaries=np.arange(-2, 2.1, 0.1), aspect=30, spacing="uniform")
         plt.colorbar(im, aspect=30)
@@ -102,7 +101,7 @@ if __name__ == "__main__":
         plt.title("State1_State2_" + str(nr_dataset))
 
         # plt.show()
-        plt.savefig(dir_path_figures + dataset_type + s + "_" +
+        plt.savefig(dir_path_figures + dataset_type + "_" +
                     str(nr_dataset) + ".png",
                     bbox_inches="tight")
         plt.close()

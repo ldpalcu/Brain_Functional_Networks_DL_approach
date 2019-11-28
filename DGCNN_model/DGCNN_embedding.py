@@ -34,10 +34,6 @@ class DGCNN(nn.Module):
         for i in range(1, len(latent_dim)):
             self.conv_params.append(nn.Linear(latent_dim[i - 1], latent_dim[i]))
 
-        # self.conv1d_params1 = nn.Conv2d(1, conv1d_channels[0], 7, 2)
-        # self.maxpool1d = nn.MaxPool2d(2, 2)
-        # self.conv1d_params2 = nn.Conv2d(conv1d_channels[0], conv1d_channels[1], 5, 1)
-
         self.conv1d_params1 = nn.Conv1d(1, conv1d_channels[0], conv1d_kws[0], conv1d_kws[0])
         self.maxpool1d = nn.MaxPool1d(2, 2)
         self.conv1d_params2 = nn.Conv1d(conv1d_channels[0], conv1d_channels[1], conv1d_kws[1], 1)
@@ -144,7 +140,6 @@ class DGCNN(nn.Module):
         ''' traditional 1d convlution and dense layers '''
         logger.info(batch_sortpooling_graphs.size())
         to_conv1d = batch_sortpooling_graphs.view((-1, 1, self.k * self.total_latent_dim))
-        # to_conv1d = batch_sortpooling_graphs.view((-1, 1, self.k, self.total_latent_dim))
         logger.info("sort pooling layer {}".format(to_conv1d.size()))
         conv1d_res = self.conv1d_params1(to_conv1d)
         logger.info(self.conv1d_params1)
@@ -160,13 +155,7 @@ class DGCNN(nn.Module):
         logger.info(conv1d_res.size())
 
         conv1d_res = self.conv1d_activation(conv1d_res)
-        #conv_outputs = conv1d_res
         logger.info(conv1d_res.size())
-
-        #conv1d_res.register_hook(self.save_gradients)
-
-        # conv1d_res = self.maxpool1d(conv1d_res)
-        # logger.info(conv1d_res.size())
 
         to_dense = conv1d_res.view(len(graph_sizes), -1)
         logger.info("to dense {}".format(to_dense.size()))

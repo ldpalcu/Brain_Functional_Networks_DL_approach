@@ -5,8 +5,6 @@ cycler==0.10.0
 decorator==4.4.0
 kiwisolver==1.0.1
 matplotlib==3.0.3
-mkl-fft==1.0.10
-mkl-random==1.0.2
 networkx==2.2
 numpy==1.16.2
 pandas==0.24.2

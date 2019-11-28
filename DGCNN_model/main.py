@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 import random
+import json
 import numpy as np
 from tqdm import tqdm
 import torch.nn as nn
@@ -12,7 +13,7 @@ from mlp_dropout import MLPClassifier, MLPRegression
 from sklearn import metrics
 from util import cmd_args, load_data
 from grad_cam import GradCam
-# from visualize_cam import create_heatmap_cam_1d
+from visualize_cam import create_heatmap_cam_1d
 # from visualize_cam import create_heatmap_cam_2d
 from visualize_cam import create_labels
 
@@ -134,7 +135,6 @@ class Classifier(nn.Module):
             node_feat, edge_feat, labels = feature_label
         conv_outputs, gradients, embed, nodes_indexes = self.gnn(batch_graph, node_feat, edge_feat, True)
         logits, _, _, _ = self.mlp(embed, labels)
-        # pred = logits.data.max(1, keepdim=True)[1]
 
         return conv_outputs, gradients, logits, nodes_indexes, labels
 
@@ -243,16 +243,21 @@ if __name__ == '__main__':
     np.savetxt("all_avg_loss_" + str(cmd_args.fold) + ".txt", all_avg_loss, "%.4f")
     np.savetxt("all_test_loss_" + str(cmd_args.fold) + ".txt", all_test_loss, "%.4f")
 
-    # print(conf_mx_train)
     np.savetxt("conf_mx_train_" + str(cmd_args.fold) + ".txt", conf_mx_train, "%d")
-    # print(conf_mx_test)
     np.savetxt("conf_mx_test_" + str(cmd_args.fold) + ".txt", conf_mx_test, "%d")
 
     # ################################# GRAD-CAM ################################################
 
-    dir_path_figures = ""
+    with open("config_DGCNN.json", "r") as read_file:
+        config_data = json.load(read_file)
 
-    dir_path_files = ""
+    # dir_path_figures = "./data/graphs_500_85_8_70_met4_imb_overlap/figures/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
+
+    # dir_path_files = "./data/graphs_500_85_8_70_met4_imb_overlap/files/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
+
+    dir_path_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
+
+    dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
 
     grad_cam = GradCam(model=classifier)
 
@@ -284,9 +289,9 @@ if __name__ == '__main__':
         if not np.isnan(cam[0]):
             np.savetxt(path_to_save_text, cam, "%.4f")
             np.savetxt(path_to_save_pred, grad_cam.confidence_score, "%.4f")
-            dict_to_write = np.empty((38, 10))
+            dict_to_write = np.empty((config_data["nr_bins_cam"], 10))
             for key, value in grad_cam.nodes_indexes.items():
                 dict_to_write[key, :] = value
             np.savetxt(path_to_save_nodes, dict_to_write, "%d")
-        create_heatmap_cam_1d_new(cam, path_to_save_figures, grad_cam.nodes_indexes, grad_cam.confidence_score)
+        create_heatmap_cam_1d(cam, path_to_save_figures, grad_cam.nodes_indexes, grad_cam.confidence_score)
         k += 1
