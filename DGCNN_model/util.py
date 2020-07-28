@@ -16,7 +16,7 @@ cmd_opt.add_argument('-data', default="GRAPHSUM70", help='data folder name')
 cmd_opt.add_argument('-batch_size', type=int, default=50, help='minibatch size')
 cmd_opt.add_argument('-seed', type=int, default=1, help='seed')
 cmd_opt.add_argument('-feat_dim', type=int, default=0, help='dimension of discrete node feature (maximum node tag)')
-cmd_opt.add_argument('-edge_feat_dim', type=int, default=1, help='dimension of edge features')
+cmd_opt.add_argument('-edge_feat_dim', type=int, default=0, help='dimension of edge features')
 cmd_opt.add_argument('-num_class', type=int, default=0, help='#classes')
 cmd_opt.add_argument('-fold', type=int, default=1, help='fold (1..10)')
 cmd_opt.add_argument('-test_number', type=int, default=0,
@@ -152,7 +152,7 @@ def load_data():
         g.label = label_dict[g.label]
     cmd_args.num_class = len(label_dict)
     cmd_args.feat_dim = len(feat_dict)  # maximum node label (tag)
-    cmd_args.edge_feat_dim = 1
+    cmd_args.edge_feat_dim = 0
     if node_feature_flag == True:
         cmd_args.attr_dim = node_features.shape[1]  # dim of node features (attributes)
     else:

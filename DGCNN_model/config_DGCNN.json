@@ -1,5 +1,5 @@
 {
-	"folder_name":"graphs_500_85_8_70_met4_imb_overlap",
-	"nr_nodes": 85,
-	"nr_bins_cam":38
+	"folder_name":"second_window_knn_graphs",
+	"nr_nodes": 128,
+	"nr_bins_cam":60
 }

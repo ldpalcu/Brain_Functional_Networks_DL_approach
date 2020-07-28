@@ -8,6 +8,7 @@
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import json
 
 # %% md
 ## Global variables
@@ -17,7 +18,10 @@ folders = ["State1/Good", "State2/Good"]
 threshold = 80
 dataset_type = "_"
 dir_idx = 1
-nr_folds = 10
+end_fold = 11
+start_fold = 10
+nr_folds = 1
+type_dataset = "train"
 
 keys_indexes = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
                 1]  # np.linspace(0, 1, 11)
@@ -31,7 +35,7 @@ def plot_histogram(count_node_values, name):
     x = list(x)
     y = list(y)
 
-    plt.figure(figsize=(10, 7))
+    plt.figure(figsize=(20, 7))
 
     plt.bar(x[0], y[0], width=0.08, color='b', align="edge")
     plt.bar(x[1:5], y[1:5], width=0.08, color='b', align="edge")
@@ -54,7 +58,7 @@ def plot_final_histogram(path_to_save, count_node_value, total_nr_examples):
     y = list(y)
     y = [k / total_nr_examples for k in y]
 
-    plt.figure(figsize=(20, 10))
+    plt.figure(figsize=(30, 10))
 
     plt.bar(x, y, width=0.5, color='b', align="center")
     plt.xticks([s for s in x])
@@ -74,18 +78,18 @@ total_nr_examples_per_folder = {folder: 0 for folder in folders}
 with open("config_DGCNN.json", "r") as read_file:
         config_data = json.load(read_file)
 
-for dir_idx in range(1, nr_folds + 1):
+for dir_idx in range(start_fold, end_fold):
     print(dir_idx)
     for folder in folders:
         total_nr_examples = 0
-        dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_vector_0_" + str(dir_idx)
+        dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_" + type_dataset + "/CAM_vector_0_" + str(dir_idx)
         dir_path_files = os.path.join(dir_path_files, folder)
 
-        dir_path_save_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_vector_0_" + str(dir_idx)
+        dir_path_save_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_" + type_dataset + "/CAM_vector_0_" + str(dir_idx)
         dir_path_save_files = os.path.join(dir_path_save_files, folder,
                                            "Nodes")
 
-        dir_path_save = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_vector_0_" + str(dir_idx)
+        dir_path_save = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_" + type_dataset + "/CAM_vector_0_" + str(dir_idx)
         dir_path_save = os.path.join(dir_path_save, folder, "Nodes")
 
         dirs = os.listdir(dir_path_files)
@@ -160,8 +164,8 @@ for dir_idx in range(1, nr_folds + 1):
         total_nr_examples_per_folder[folder] += total_nr_examples
 
 
-dir_path_save_average_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_1/CAM_average"
-dir_path_save_average_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_average"
+dir_path_save_average_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_" + type_dataset + "/CAM_average"
+dir_path_save_average_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_" + type_dataset + "/CAM_average"
 total_nr_examples_good = total_nr_examples_per_folder[folders[0]]
 total_nr_examples_wrong = total_nr_examples_per_folder[folders[1]]
 for key, values in average_folder_dict.items():

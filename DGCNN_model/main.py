@@ -191,6 +191,45 @@ def loop_dataset(g_list, classifier, sample_idxes, optimizer=None, bsize=cmd_arg
     return avg_loss, conf_mx
 
 
+def create_grad_cam_vectors(graphs, dir_path_figures, dir_path_files):
+    grad_cam = GradCam(model=classifier)
+
+    k = 0
+    for graph in graphs:
+        cam = grad_cam([graph], None)
+        label = create_labels(grad_cam.labels)
+        pred_label = create_labels(grad_cam.pred_labels)
+
+        if grad_cam.labels == grad_cam.pred_labels:
+            file_name_figure = "cam_" + str(k) + ".png"
+            path_to_save_figures = os.path.join(dir_path_figures, label, "Good", file_name_figure)
+            file_name_text = "cam_" + str(k) + ".txt"
+            path_to_save_text = os.path.join(dir_path_files, label, "Good", file_name_text)
+            file_name_pred = "cam_pred_" + str(k) + ".txt"
+            path_to_save_pred = os.path.join(dir_path_files, label, "Good", file_name_pred)
+            file_name_nodes = "nodes_" + str(k) + ".txt"
+            path_to_save_nodes = os.path.join(dir_path_files, label, "Good", file_name_nodes)
+        else:
+            file_name_figure = pred_label + "_cam_" + str(k) + ".png"
+            path_to_save_figures = os.path.join(dir_path_figures, label, "Wrong", file_name_figure)
+            file_name_text = pred_label + "_cam_" + str(k) + ".txt"
+            path_to_save_text = os.path.join(dir_path_files, label, "Wrong", file_name_text)
+            file_name_pred = pred_label + "_cam_pred_" + str(k) + ".txt"
+            path_to_save_pred = os.path.join(dir_path_files, label, "Wrong", file_name_pred)
+            file_name_nodes = pred_label + "_nodes_" + str(k) + ".txt"
+            path_to_save_nodes = os.path.join(dir_path_files, label, "Wrong", file_name_nodes)
+
+        if not np.isnan(cam[0]):
+            np.savetxt(path_to_save_text, cam, "%.4f")
+            np.savetxt(path_to_save_pred, grad_cam.confidence_score, "%.4f")
+            dict_to_write = np.empty((config_data["nr_bins_cam"], 10))
+            for key, value in grad_cam.nodes_indexes.items():
+                dict_to_write[key, :] = value
+            np.savetxt(path_to_save_nodes, dict_to_write, "%d")
+        #create_heatmap_cam_1d(cam, path_to_save_figures, grad_cam.nodes_indexes, grad_cam.confidence_score)
+        k += 1
+
+
 if __name__ == '__main__':
     random.seed(cmd_args.seed)
     np.random.seed(cmd_args.seed)
@@ -255,43 +294,18 @@ if __name__ == '__main__':
 
     # dir_path_files = "./data/graphs_500_85_8_70_met4_imb_overlap/files/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
 
-    dir_path_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
+    dir_path_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_train/CAM_vector_0_" + str(
+        cmd_args.fold)
 
-    dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_1/CAM_vector_0_" + str(cmd_args.fold)
+    dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_train/CAM_vector_0_" + str(
+        cmd_args.fold)
 
-    grad_cam = GradCam(model=classifier)
+    create_grad_cam_vectors(train_graphs, dir_path_figures, dir_path_files)
 
-    k = 0
-    for test_graph in test_graphs:
-        cam = grad_cam([test_graph], None)
-        label = create_labels(grad_cam.labels)
-        pred_label = create_labels(grad_cam.pred_labels)
+    dir_path_figures = "./data/" + config_data["folder_name"] + "/figures/CAM_1D_vector_test/CAM_vector_0_" + str(
+        cmd_args.fold)
 
-        if grad_cam.labels == grad_cam.pred_labels:
-            file_name_figure = "cam_" + str(k) + ".png"
-            path_to_save_figures = os.path.join(dir_path_figures, label, "Good", file_name_figure)
-            file_name_text = "cam_" + str(k) + ".txt"
-            path_to_save_text = os.path.join(dir_path_files, label, "Good", file_name_text)
-            file_name_pred = "cam_pred_" + str(k) + ".txt"
-            path_to_save_pred = os.path.join(dir_path_files, label, "Good", file_name_pred)
-            file_name_nodes = "nodes_" + str(k) + ".txt"
-            path_to_save_nodes = os.path.join(dir_path_files, label, "Good", file_name_nodes)
-        else:
-            file_name_figure = pred_label + "_cam_" + str(k) + ".png"
-            path_to_save_figures = os.path.join(dir_path_figures, label, "Wrong", file_name_figure)
-            file_name_text = pred_label + "_cam_" + str(k) + ".txt"
-            path_to_save_text = os.path.join(dir_path_files, label, "Wrong", file_name_text)
-            file_name_pred = pred_label + "_cam_pred_" + str(k) + ".txt"
-            path_to_save_pred = os.path.join(dir_path_files, label, "Wrong", file_name_pred)
-            file_name_nodes = pred_label + "_nodes_" + str(k) + ".txt"
-            path_to_save_nodes = os.path.join(dir_path_files, label, "Wrong", file_name_nodes)
+    dir_path_files = "./data/" + config_data["folder_name"] + "/files/CAM_1D_vector_test/CAM_vector_0_" + str(
+        cmd_args.fold)
 
-        if not np.isnan(cam[0]):
-            np.savetxt(path_to_save_text, cam, "%.4f")
-            np.savetxt(path_to_save_pred, grad_cam.confidence_score, "%.4f")
-            dict_to_write = np.empty((config_data["nr_bins_cam"], 10))
-            for key, value in grad_cam.nodes_indexes.items():
-                dict_to_write[key, :] = value
-            np.savetxt(path_to_save_nodes, dict_to_write, "%d")
-        create_heatmap_cam_1d(cam, path_to_save_figures, grad_cam.nodes_indexes, grad_cam.confidence_score)
-        k += 1
+    create_grad_cam_vectors(test_graphs, dir_path_figures, dir_path_files)

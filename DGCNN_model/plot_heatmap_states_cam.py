@@ -16,7 +16,7 @@ def getdicts(directory):
 
     for f in onlyfiles:
         with open(directory + "/" + f, "r") as g:
-            newarr = np.zeros(shape=85)
+            newarr = np.zeros(shape=128)
             for l in g:
                 arr = l.rstrip("\n").split(" ")
                 newarr[int(float(arr[0])) - 1] = float(arr[1])
@@ -27,14 +27,14 @@ def getdicts(directory):
 
 
 state = ["State1/Good", "State2/Good"]
-order = range(0, 85)
+order = range(1, 129)
 labels = False
 
 nr_dataset = 70
 dataset_type = "_"
 
-dir_path_files = "./data/graphs_500_85_8_70_met4_imb_overlap/files/CAM_1D_vector_1/CAM_average/"
-dir_path_figures = "./data/graphs_500_85_8_70_met4_imb_overlap/figures/CAM_1D_vector_1/CAM_average/"
+dir_path_files = "./data/second_window_knn_graphs/files/CAM_1D_vector_test/CAM_average/"
+dir_path_figures = "./data/second_window_knn_graphs/figures/CAM_1D_vector_test/CAM_average/"
 
 if __name__ == "__main__":
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
             arr_dict[k] = control[k] - etoh[k]
 
         print(len(arr_dict.keys()))
-        arr = np.zeros(shape=(len(arr_dict.keys()) - 2, 85))
+        arr = np.zeros(shape=(len(arr_dict.keys()) - 2, 128))
 
         for k, v in arr_dict.items():
             _, _, _, _, nr_cam = k.split("_")
@@ -64,17 +64,17 @@ if __name__ == "__main__":
             else:
                 orderd_ROIs.append(i)
 
-        plt.figure(figsize=(20, 9))
+        plt.figure(figsize=(35, 9))
 
-        extent = [0, 85, 0.1, 1.1]
+        extent = [1, 129, 0.1, 1.1]
 
         im = plt.imshow(arr[0:10],
                         cmap="jet",
                         extent=extent,
                         interpolation="nearest",
                         aspect="auto",
-                        vmin=-0.5,
-                        vmax=0.5)
+                        vmin=-0.2,
+                        vmax=0.2)
                         
 
         # plt.colorbar(im, boundaries=np.arange(-2, 2.1, 0.1), aspect=30, spacing="uniform")
@@ -85,13 +85,13 @@ if __name__ == "__main__":
             plt.gcf().subplots_adjust(bottom=0.25)
 
         if labels:
-            plt.xticks(range(0, 85),
+            plt.xticks(range(1, 129),
                        orderd_ROIs,
                        fontsize=8,
                        rotation=45,
                        ha="right")
         else:
-            plt.xticks(range(0, 85), orderd_ROIs, fontsize=8)
+            plt.xticks(range(1, 129), orderd_ROIs, fontsize=8)
 
         plt.yticks(np.arange(0.1, 1.1, 0.1))
 

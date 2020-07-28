@@ -22,7 +22,7 @@ def create_heatmap_cam_2d(cam, path_to_save, nodes_indexes, confidence_score):
 
 
 def create_heatmap_cam_1d(cam, path_to_save, nodes_indexes, confidence_score):
-    fig = plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(30, 10))
     plt.yticks([])
     plt.xticks(range(0, len(cam)), nodes_indexes)
     plt.figtext(x=0.13,
@@ -55,7 +55,7 @@ def create_heatmap_cam_1d(cam, path_to_save, nodes_indexes, confidence_score):
                     fontname="sans-serif")
         y -= 0.03
     y = 0.40
-    for i in range(30, 38):
+    for i in range(30, 60):
         plt.figtext(x=0.64,
                     y=y,
                     s="{} {}".format(i, nodes_indexes[i]),
@@ -68,5 +68,6 @@ def create_heatmap_cam_1d(cam, path_to_save, nodes_indexes, confidence_score):
 
 
 def create_labels(state):
-    switcher = {}
+    switcher = {0 : "State1",
+    1: "State2"}
     return switcher.get(state, lambda: "Invalid state")
