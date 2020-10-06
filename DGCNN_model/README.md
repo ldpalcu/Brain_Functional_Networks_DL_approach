@@ -3,6 +3,12 @@
 ## Requirements
 <code>pip install -r requirements.txt</code>
 
+## Config file
+*config_DGCNN.json* has the following parameters:\
+* **folder_name** - the name of the results folder
+* **nr_nodes** - the number of graph's nodes
+* **nr_bins_cam** - the size of the result of Grad-CAM (the results is an array).
+
 ## Getting started
 * Create train/test splits\
 <code>python preprocessing_data.py</code>
