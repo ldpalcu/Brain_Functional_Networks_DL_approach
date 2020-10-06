@@ -4,6 +4,7 @@
 <code>pip install -r requirements.txt</code>
 
 ## Getting started
-*Train the model
+* Train the model
+
 
 
