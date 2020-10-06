@@ -9,6 +9,12 @@
 * **nr_nodes** - the number of graph's nodes
 * **nr_bins_cam** - the size of the result of Grad-CAM (the results is an array).
 
+## Input data
+An example of input data can be found in *pre_processed_data* folder. All the graphs have the Networkx xml file format. If you want to change the format, then you have to create a new Python file for preproceesing all the data.
+
+## Output data
+An example of how you should save the results can be found in *data* folder.
+
 ## Getting started
 * Create train/test splits\
 <code>python preprocessing_data.py</code>
