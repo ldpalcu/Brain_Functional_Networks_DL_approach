@@ -1,5 +1,5 @@
 awscli==1.16.199
-certifi==2019.3.9
+certifi==2022.12.7
 cffi==1.12.2
 cycler==0.10.0
 decorator==4.4.0
